@@ -113,8 +113,8 @@ app.use(
 app.use(router.allowedMethods());
 app.use(router.routes());
 
-app.listen(1437, () => {
-  console.log('listening on port 1437');
+app.listen(process.env.PORT || 1437, () => {
+  console.log(`listening on port ${process.env.PORT || 1437}`);
 
   setInterval(() => {
     axios
