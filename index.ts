@@ -91,7 +91,7 @@ router.get('/pilots', async (ctx) => {
 
   const interval = setInterval(() => {
     writeToStream();
-  }, 2500);
+  }, 8000);
 
   return new Promise<void>((res) => {
     ctx.response.socket.on('close', () => {
