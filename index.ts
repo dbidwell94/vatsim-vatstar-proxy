@@ -3,6 +3,10 @@ import cors from '@koa/cors';
 import axios from 'axios';
 import Router from 'koa-router';
 
+import airportDataArray from './assets/airportData.json';
+
+const airportIcaoObject = new Map(airportDataArray.map((airport) => [airport.icao.toLowerCase(), airport]));
+
 interface IFlightPlan {
   aircraft: string;
   aircraft_faa: string;
@@ -64,6 +68,7 @@ router.get('/', async (ctx, next) => {
   await next();
 });
 
+// SSE for the /pilots feed
 router.get('/pilots', async (ctx) => {
   ctx.request.socket.setTimeout(0);
   ctx.req.socket.setNoDelay(true);
@@ -100,6 +105,18 @@ router.get('/pilots', async (ctx) => {
       res();
     });
   });
+});
+
+router.get('/airport/:icao', async (ctx, next) => {
+  const { icao } = ctx.params;
+
+  if (airportIcaoObject.has(icao)) {
+    ctx.status = 200;
+    ctx.body = airportIcaoObject.get(icao);
+  } else {
+    ctx.status = 404;
+  }
+  await next();
 });
 
 const app = new koa();
